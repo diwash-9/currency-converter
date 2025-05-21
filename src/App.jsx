@@ -4,7 +4,7 @@ import { InputBox } from "./components";
 import useCurrencyInfo from "./hooks/useCurrencyInfo.js";
 
 function App() {
-  const [amount, setAmount] = useState();
+  const [amount, setAmount] = useState("");
   const [from, setFrom] = useState("usd");
   const [to, setTo] = useState("npr");
   const [convertedAmount, setConvertedAmount] = useState(0);
@@ -23,62 +23,68 @@ function App() {
   };
 
   return (
-    <div
-      className="w-full h-screen flex flex-wrap justify-center items-center bg-cover bg-no-repeat "
-      style={{
-        backgroundImage: `url('https://images.pexels.com/photos/164527/pexels-photo-164527.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')`,
-      }}
-    >
-      <div className="w-full">
-        <div className="w-full max-w-md mx-auto border border-gray-60 rounded-lg p-5 backdrop-blur-sm bg-white/30">
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              convert();
-            }}
-          >
-            <div className="w-full mb-1">
-              <InputBox
-                label="From"
-                amount={amount}
-                currencyOptions={options}
-                onCurrencyChange={(currency) => {
-                  setAmount(amount);
-                }}
-                selectCurrency={from}
-                onAmountChange={(amount)=>setAmount(amount)}
-              />
-            </div>
-            <div className="relative w-full h-0.5">
-              <button
-                type="button"
-                className="cursor-pointer absolute left-1/2 -translate-x-1/2 -translate-y-1/2 border-2 border-white rounded-md bg-blue-600 text-white px-2 py-0.5"
-                onClick={swap}
-              >
-                swap
-              </button>
-            </div>
-            <div className="w-full mt-1 mb-4">
-              <InputBox
-                label="to"
-                amount={convertedAmount}
-                currencyOptions={options}
-                onCurrencyChange={(currency) => {
-                  setTo(currency);
-                }}
-                selectCurrency={to}
-                amountDisable
-              />
-            </div>
+    <div className="min-h-screen bg-white flex flex-col justify-between py-16 px-6 font-sans text-gray-900">
+      <main className="max-w-md mx-auto w-full p-8 rounded-lg shadow-md border border-gray-200">
+        <header className="mb-8 text-center">
+          <h1 className="text-3xl font-bold mb-1">Currency Converter</h1>
+          <p className="text-sm text-gray-600">
+            Simple, fast and accurate currency conversion.
+          </p>
+        </header>
+
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            convert();
+          }}
+          className="space-y-6"
+          aria-label="Currency conversion form"
+        >
+          <div>
+            <InputBox
+              label="From"
+              amount={amount}
+              currencyOptions={options}
+              onCurrencyChange={(currency) => setFrom(currency)}
+              selectCurrency={from}
+              onAmountChange={(val) => setAmount(val)}
+            />
+          </div>
+
+          <div className="flex justify-center">
             <button
-              type="submit"
-              className="w-full bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-800 cursor-pointer"
+              type="button"
+              onClick={swap}
+              aria-label="Swap currencies"
+              className="text-sm font-semibold text-blue-600 hover:text-blue-800 transition"
             >
-              Convert {from.toUpperCase()} to {to.toUpperCase()}
+              ↕ Swap
             </button>
-          </form>
-        </div>
-      </div>
+          </div>
+
+          <div>
+            <InputBox
+              label="To"
+              amount={convertedAmount}
+              currencyOptions={options}
+              onCurrencyChange={(currency) => setTo(currency)}
+              selectCurrency={to}
+              amountDisable
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white font-semibold py-3 rounded-md hover:bg-blue-700 transition"
+          >
+            Convert {from.toUpperCase()} to {to.toUpperCase()}
+          </button>
+        </form>
+      </main>
+
+      <footer className="text-center text-gray-500 text-xs mt-12 select-none">
+        &copy; {new Date().getFullYear()} Devraj Khatiwada. All rights reserved.
+      </footer>
     </div>
   );
 }
