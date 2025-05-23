@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 import { InputBox } from "./components";
 import useCurrencyInfo from "./hooks/useCurrencyInfo.js";
@@ -8,19 +8,23 @@ function App() {
   const [from, setFrom] = useState("usd");
   const [to, setTo] = useState("npr");
   const [convertedAmount, setConvertedAmount] = useState(0);
+
   const currencyInfo = useCurrencyInfo(from);
   const options = Object.keys(currencyInfo);
 
+  // 🔄 Swap logic
   const swap = () => {
     setFrom(to);
     setTo(from);
-    setConvertedAmount(amount);
-    setAmount(convertedAmount);
+    setAmount(convertedAmount); // Show converted value in input
   };
 
-  const convert = () => {
-    setConvertedAmount(amount * currencyInfo[to]);
-  };
+  // ✅ Realtime conversion logic
+  useEffect(() => {
+    if (!isNaN(amount) && currencyInfo[to]) {
+      setConvertedAmount((parseFloat(amount) || 0) * currencyInfo[to]);
+    }
+  }, [amount, from, to, currencyInfo]);
 
   return (
     <div className="min-h-screen bg-white flex flex-col justify-between py-16 px-6 font-sans text-gray-900">
@@ -32,14 +36,8 @@ function App() {
           </p>
         </header>
 
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            convert();
-          }}
-          className="space-y-6"
-          aria-label="Currency conversion form"
-        >
+        {/* 🔄 No more form submit */}
+        <div className="space-y-6" aria-label="Currency conversion form">
           <div>
             <InputBox
               label="From"
@@ -72,14 +70,7 @@ function App() {
               amountDisable
             />
           </div>
-
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white font-semibold py-3 rounded-md hover:bg-blue-700 transition"
-          >
-            Convert {from.toUpperCase()} to {to.toUpperCase()}
-          </button>
-        </form>
+        </div>
       </main>
 
       <footer className="text-center text-gray-500 text-xs mt-12 select-none">
